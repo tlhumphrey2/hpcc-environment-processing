@@ -1,0 +1,5 @@
+   <Instance computer="{COMPUTER_NAME}"
+             directory="/var/lib/HPCCSystems/mydali"
+             name="s1"
+             netAddress="{COMPUTER_IP_ADDRESS}"
+             port="7070"/>

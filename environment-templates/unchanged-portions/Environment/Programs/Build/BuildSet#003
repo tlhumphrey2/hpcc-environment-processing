@@ -1,0 +1,5 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="dfuserver"
+             path="componentfiles/dfuserver"
+             processName="DfuServerProcess"
+             schema="dfuserver.xsd"/>

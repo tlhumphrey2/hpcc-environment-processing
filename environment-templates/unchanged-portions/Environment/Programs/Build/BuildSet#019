@@ -1,0 +1,5 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="thor"
+             path="componentfiles/thor"
+             processName="ThorCluster"
+             schema="thor.xsd"/>

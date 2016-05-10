@@ -1,0 +1,5 @@
+   <BuildSet installSet="roxie_deploy_map.xml"
+             name="roxie"
+             path="componentfiles/configxml"
+             processName="RoxieCluster"
+             schema="roxie.xsd"/>

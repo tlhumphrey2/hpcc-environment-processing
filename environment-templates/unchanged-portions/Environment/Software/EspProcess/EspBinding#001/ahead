@@ -1,0 +1,9 @@
+   <EspBinding defaultForPort="true"
+               defaultServiceVersion=""
+               name="myws_ecl"
+               port="8002"
+               protocol="http"
+               resourcesBasedn="ou=WsEcl,ou=EspServices,ou=ecl"
+               service="myws_ecl"
+               workunitsBasedn="ou=workunits,ou=ecl"
+               wsdlServiceAddress="">

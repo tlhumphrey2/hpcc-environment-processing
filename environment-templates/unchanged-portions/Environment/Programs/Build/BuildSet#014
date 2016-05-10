@@ -1,0 +1,6 @@
+   <BuildSet deployable="no"
+             installSet="deploy_map.xml"
+             name="ldapServer"
+             path="componentfiles/ldapServer"
+             processName="LDAPServerProcess"
+             schema="ldapserver.xsd"/>

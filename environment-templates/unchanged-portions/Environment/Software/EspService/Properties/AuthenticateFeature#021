@@ -1,0 +1,4 @@
+    <AuthenticateFeature description="Access to ESDL configuration service"
+                         path="ESDLConfigAccess"
+                         resource="ESDLConfigAccess"
+                         service="ws_esdlconfig"/>

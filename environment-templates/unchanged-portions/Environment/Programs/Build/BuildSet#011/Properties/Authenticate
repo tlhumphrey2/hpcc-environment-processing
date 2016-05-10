@@ -1,0 +1,5 @@
+     <Authenticate access="Read"
+                   description="Root access to SMC service"
+                   path="/"
+                   required="Read"
+                   resource="SmcAccess"/>

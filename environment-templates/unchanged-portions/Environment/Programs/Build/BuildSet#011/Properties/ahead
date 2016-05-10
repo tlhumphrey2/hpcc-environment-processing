@@ -1,0 +1,4 @@
+    <Properties defaultPort="8010"
+                defaultResourcesBasedn="ou=SMC,ou=EspServices,ou=ecl"
+                defaultSecurePort="18010"
+                type="WsSMC">

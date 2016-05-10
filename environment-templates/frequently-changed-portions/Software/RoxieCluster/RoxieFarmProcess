@@ -1,0 +1,6 @@
+   <RoxieFarmProcess aclName=""
+                     listenQueue="200"
+                     name="farm{FARM_NUMBER}"
+                     numThreads="30"
+                     port="{FARM_PORT_NUMBER}"
+                     requestArrayThreads="5"/>

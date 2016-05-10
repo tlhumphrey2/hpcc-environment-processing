@@ -1,0 +1,5 @@
+   <BuildSet installSet="eclscheduler_deploy_map.xml"
+             name="eclscheduler"
+             path="componentfiles/configxml"
+             processName="EclSchedulerProcess"
+             schema="eclscheduler.xsd"/>

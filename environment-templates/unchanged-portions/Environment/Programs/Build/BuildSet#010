@@ -1,0 +1,5 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="esp"
+             path="componentfiles/esp"
+             processName="EspProcess"
+             schema="esp.xsd"/>

@@ -1,0 +1,4 @@
+     <AuthenticateFeature description="Access to machine information"
+                          path="MachineInfoAccess"
+                          resource="MachineInfoAccess"
+                          service="ws_machine"/>

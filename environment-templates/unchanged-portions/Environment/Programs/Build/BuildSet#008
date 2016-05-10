@@ -1,0 +1,5 @@
+   <BuildSet installSet="eclccserver_deploy_map.xml"
+             name="eclccserver"
+             path="componentfiles/configxml"
+             processName="EclCCServerProcess"
+             schema="eclccserver.xsd"/>

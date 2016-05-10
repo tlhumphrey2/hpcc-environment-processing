@@ -1,0 +1,5 @@
+   <Cluster name="hthor" prefix="hthor">
+    <EclAgentProcess process="myeclagent"/>
+    <EclCCServerProcess process="myeclccserver"/>
+    <EclSchedulerProcess process="myeclscheduler"/>
+   </Cluster>

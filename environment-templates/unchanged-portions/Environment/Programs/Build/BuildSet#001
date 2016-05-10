@@ -1,0 +1,5 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="dali"
+             path="componentfiles/dali"
+             processName="DaliServerProcess"
+             schema="dali.xsd"/>

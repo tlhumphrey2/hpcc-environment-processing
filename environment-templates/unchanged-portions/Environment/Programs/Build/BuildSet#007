@@ -1,0 +1,6 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="eclplus"
+             overide="no"
+             path="componentfiles/eclplus"
+             processName="EclPlusProcess"
+             schema="eclplus.xsd"/>

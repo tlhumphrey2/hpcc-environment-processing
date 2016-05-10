@@ -1,0 +1,4 @@
+     <AuthenticateFeature description="Access to spraying files"
+                          path="FileSprayAccess"
+                          resource="FileSprayAccess"
+                          service="ws_fs"/>

@@ -1,0 +1,4 @@
+     <AuthenticateFeature description="Access to cluster topology"
+                          path="ClusterTopologyAccess"
+                          resource="ClusterTopologyAccess"
+                          service="ws_topology"/>

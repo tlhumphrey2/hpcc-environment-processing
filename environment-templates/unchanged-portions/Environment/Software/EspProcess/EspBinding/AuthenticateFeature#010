@@ -1,0 +1,5 @@
+    <AuthenticateFeature authenticate="Yes"
+                         description="Access to DFU exceptions"
+                         path="DfuExceptionsAccess"
+                         resource="DfuExceptions"
+                         service="ws_fs"/>

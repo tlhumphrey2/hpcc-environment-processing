@@ -1,0 +1,9 @@
+   <EspBinding defaultForPort="true"
+               defaultServiceVersion=""
+               name="myespsmc"
+               port="8010"
+               protocol="http"
+               resourcesBasedn="ou=SMC,ou=EspServices,ou=ecl"
+               service="EclWatch"
+               workunitsBasedn="ou=workunits,ou=ecl"
+               wsdlServiceAddress="">

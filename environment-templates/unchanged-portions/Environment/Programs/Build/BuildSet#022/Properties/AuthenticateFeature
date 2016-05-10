@@ -1,0 +1,4 @@
+     <AuthenticateFeature description="Access to ECL Direct service"
+                          path="EclDirectAccess"
+                          resource="EclDirectAccess"
+                          service="ecldirect"/>

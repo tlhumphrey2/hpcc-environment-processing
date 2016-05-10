@@ -1,0 +1,9 @@
+  <DfuServerProcess build="_"
+                    buildSet="dfuserver"
+                    daliServers="mydali"
+                    description="DFU Server"
+                    monitorinterval="900"
+                    monitorqueue="dfuserver_monitor_queue"
+                    name="mydfuserver"
+                    queue="dfuserver_queue"
+                    transferBufferSize="65536">

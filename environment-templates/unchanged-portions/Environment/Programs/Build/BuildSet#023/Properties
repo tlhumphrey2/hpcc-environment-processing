@@ -1,0 +1,6 @@
+    <Properties bindingType="EsdlBinding"
+                defaultPort="8043"
+                defaultResourcesBasedn="ou=EspServices,ou=ecl"
+                defaultSecurePort="18043"
+                plugin="esdl_svc_engine"
+                type="DynamicESDL"/>

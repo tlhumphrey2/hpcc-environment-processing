@@ -1,0 +1,5 @@
+    <AuthenticateFeature authenticate="Yes"
+                         description="Access to DFU XRef"
+                         path="DfuXrefAccess"
+                         resource="DfuXrefAccess"
+                         service="ws_dfuxref"/>

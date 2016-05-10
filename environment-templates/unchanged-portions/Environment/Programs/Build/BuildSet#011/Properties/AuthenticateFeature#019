@@ -1,0 +1,4 @@
+     <AuthenticateFeature description="Access to others&apos; workunits"
+                          path="OthersWorkunitsAccess"
+                          resource="OthersWorkunitsAccess"
+                          service="ws_workunits"/>

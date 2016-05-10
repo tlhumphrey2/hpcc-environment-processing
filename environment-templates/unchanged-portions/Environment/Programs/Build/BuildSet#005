@@ -1,0 +1,5 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="eclagent"
+             path="componentfiles/eclagent"
+             processName="EclAgentProcess"
+             schema="eclagent_config.xsd"/>

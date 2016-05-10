@@ -1,0 +1,4 @@
+   <Instance computer="{COMPUTER_NAME}"
+             directory="/var/lib/HPCCSystems/myeclagent"
+             name="s1"
+             netAddress="{COMPUTER_IP_ADDRESS}"/>

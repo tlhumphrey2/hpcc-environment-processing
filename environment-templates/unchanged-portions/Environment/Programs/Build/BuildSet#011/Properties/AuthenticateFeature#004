@@ -1,0 +1,4 @@
+     <AuthenticateFeature description="Access to DFU"
+                          path="DfuAccess"
+                          resource="DfuAccess"
+                          service="ws_dfu"/>

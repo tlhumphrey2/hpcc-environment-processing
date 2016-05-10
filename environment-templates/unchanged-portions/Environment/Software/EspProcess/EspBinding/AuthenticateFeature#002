@@ -1,0 +1,5 @@
+    <AuthenticateFeature authenticate="Yes"
+                         description="Access to roxie control commands"
+                         path="RoxieControlAccess"
+                         resource="RoxieControlAccess"
+                         service="ws_smc"/>

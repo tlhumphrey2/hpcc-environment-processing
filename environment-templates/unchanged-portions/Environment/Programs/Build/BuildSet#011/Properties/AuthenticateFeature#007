@@ -1,0 +1,4 @@
+     <AuthenticateFeature description="Access to SNMP metrics information"
+                          path="MetricsAccess"
+                          resource="MetricsAccess"
+                          service="ws_machine"/>

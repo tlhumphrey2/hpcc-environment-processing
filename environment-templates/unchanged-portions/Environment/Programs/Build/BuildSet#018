@@ -1,0 +1,6 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="soapplus"
+             overide="no"
+             path="componentfiles/soapplus"
+             processName="SoapPlusProcess"
+             schema="soapplus.xsd"/>

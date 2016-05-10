@@ -1,0 +1,6 @@
+   <BuildSet deployable="no"
+             installSet="deploy_map.xml"
+             name="ws_ecl"
+             path="componentfiles/ws_ecl"
+             processName="EspService"
+             schema="esp_service_wsecl2.xsd">

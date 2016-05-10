@@ -1,0 +1,7 @@
+  <DropZone build="_"
+            buildSet="DropZone"
+            computer="{COMPUTER_NAME}"
+            description="DropZone process"
+            directory="/var/lib/HPCCSystems/mydropzone"
+            name="mydropzone"
+            umask="002"/>

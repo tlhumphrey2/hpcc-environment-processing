@@ -1,0 +1,5 @@
+   <SSH SSHidentityfile="$HOME/.ssh/id_rsa"
+        SSHpassword=""
+        SSHretries="3"
+        SSHtimeout="0"
+        SSHusername="hpcc"/>

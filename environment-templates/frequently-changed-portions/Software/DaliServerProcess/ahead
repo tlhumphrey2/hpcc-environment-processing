@@ -1,0 +1,6 @@
+  <DaliServerProcess backupComputer="{COMPUTER_NAME}" @DEFAULT DOES NOT EXISTS
+                     build="_"
+                     buildSet="dali"
+                     environment="/etc/HPCCSystems/environment.xml"
+                     name="mydali"
+                     recoverFromIncErrors="true">

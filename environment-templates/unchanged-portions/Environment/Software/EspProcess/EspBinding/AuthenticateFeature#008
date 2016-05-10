@@ -1,0 +1,5 @@
+    <AuthenticateFeature authenticate="Yes"
+                         description="Access to remote execution"
+                         path="ExecuteAccess"
+                         resource="ExecuteAccess"
+                         service="ws_machine"/>

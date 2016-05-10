@@ -1,0 +1,5 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="sasha"
+             path="componentfiles/sasha"
+             processName="SashaServerProcess"
+             schema="sasha.xsd"/>

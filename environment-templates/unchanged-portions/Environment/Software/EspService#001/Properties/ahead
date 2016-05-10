@@ -1,0 +1,6 @@
+   <Properties bindingType="ws_eclSoapBinding"
+               defaultPort="8002"
+               defaultResourcesBasedn="ou=WsEcl,ou=EspServices,ou=ecl"
+               defaultSecurePort="18002"
+               plugin="ws_ecl"
+               type="ws_ecl">

@@ -1,0 +1,4 @@
+     <AuthenticateFeature description="Access to super computer environment"
+                          path="ConfigAccess"
+                          resource="ConfigAccess"
+                          service="ws_config"/>

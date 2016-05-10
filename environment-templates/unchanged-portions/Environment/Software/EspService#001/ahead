@@ -1,0 +1,6 @@
+  <EspService build="_"
+              buildSet="ws_ecl"
+              description="WS ECL Service"
+              name="myws_ecl"
+              roxieTimeout="300"
+              workunitTimeout="600">

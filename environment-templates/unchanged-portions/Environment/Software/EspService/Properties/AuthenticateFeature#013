@@ -1,0 +1,4 @@
+    <AuthenticateFeature description="Access to dkcing of key files"
+                         path="FileDkcAccess"
+                         resource="FileDkcAccess"
+                         service="ws_fs"/>

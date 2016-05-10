@@ -1,0 +1,6 @@
+   <BuildSet deployable="no"
+             installSet="deploy_map.xml"
+             name="topology"
+             path="componentfiles/topology"
+             processName="Topology"
+             schema="topology.xsd"/>

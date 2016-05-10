@@ -1,0 +1,9 @@
+  <EclCCServerProcess build="_"
+                      buildSet="eclccserver"
+                      daliServers="mydali"
+                      description="EclCCServer process"
+                      enableSysLog="true"
+                      generatePrecompiledHeader="true"
+                      maxEclccProcesses="4"
+                      name="myeclccserver"
+                      traceLevel="1">

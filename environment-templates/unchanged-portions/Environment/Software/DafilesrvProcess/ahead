@@ -1,0 +1,8 @@
+  <DafilesrvProcess build="_"
+                    buildSet="dafilesrv"
+                    description="DaFileSrv process"
+                    name="mydafilesrv"
+                    parallelRequestLimit="20"
+                    throttleCPULimit="75"
+                    throttleDelayMs="5000"
+                    version="1">

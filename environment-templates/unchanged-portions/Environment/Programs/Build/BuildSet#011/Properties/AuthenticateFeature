@@ -1,0 +1,4 @@
+     <AuthenticateFeature description="Access to SMC service"
+                          path="SmcAccess"
+                          resource="SmcAccess"
+                          service="ws_smc"/>

@@ -1,0 +1,5 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="ftslave"
+             path="componentfiles/ftslave"
+             processName="FTSlaveProcess"
+             schema="ftslave_linux.xsd"/>

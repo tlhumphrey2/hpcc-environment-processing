@@ -1,0 +1,7 @@
+   <Instance computer="{COMPUTER_NAME}"
+             directory="/var/lib/HPCCSystems/mydafilesrv"
+             name="s{NUMBER}"
+             netAddress="{COMPUTER_IP_ADDRESS}"
+             parallelRequestLimit="20"
+             throttleCPULimit="75"
+             throttleDelayMs="5000"/>

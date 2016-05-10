@@ -1,0 +1,5 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="hqltest"
+             overide="no"
+             path="componentfiles/hqltest"
+             processName="HqlTestProcess"/>

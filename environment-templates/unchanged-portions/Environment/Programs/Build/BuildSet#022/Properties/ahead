@@ -1,0 +1,6 @@
+    <Properties bindingType="EclDirectSoapBinding"
+                defaultPort="8008"
+                defaultResourcesBasedn="ou=EclDirectAccess,ou=EspServices,ou=ecl"
+                defaultSecurePort="18008"
+                plugin="ecldirect"
+                type="ecldirect">

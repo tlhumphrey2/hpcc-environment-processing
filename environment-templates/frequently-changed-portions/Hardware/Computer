@@ -1,0 +1,4 @@
+  <Computer computerType="linuxmachine"
+            domain="localdomain"
+            name="{COMPUTER_NAME}"
+            netAddress="{COMPUTER_IP_ADDRESS}"/>

@@ -1,0 +1,4 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="eclminus"
+             overide="no"
+             path="componentfiles/eclminus"/>

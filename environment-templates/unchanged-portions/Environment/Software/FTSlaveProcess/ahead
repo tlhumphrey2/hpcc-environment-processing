@@ -1,0 +1,5 @@
+  <FTSlaveProcess build="_"
+                  buildSet="ftslave"
+                  description="FTSlave process"
+                  name="myftslave"
+                  version="1">

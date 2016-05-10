@@ -1,0 +1,5 @@
+    <AuthenticateFeature authenticate="Yes"
+                         description="Access to WS ECL service"
+                         path="WsEclAccess"
+                         resource="WsEclAccess"
+                         service="ws_ecl"/>

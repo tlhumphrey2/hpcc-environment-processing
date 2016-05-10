@@ -1,0 +1,6 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="dfuplus"
+             overide="no"
+             path="componentfiles/dfuplus"
+             processName="DfuplusProcess"
+             schema="dfuplus.xsd"/>

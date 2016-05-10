@@ -1,0 +1,5 @@
+   <BuildSet installSet="deploy_map.xml"
+             name="dafilesrv"
+             path="componentfiles/dafilesrv"
+             processName="DafilesrvProcess"
+             schema="dafilesrv.xsd"/>

@@ -1,0 +1,4 @@
+    <AuthenticateFeature description="Access to files in dropzone"
+                         path="FileIOAccess"
+                         resource="FileIOAccess"
+                         service="ws_fileio"/>

@@ -1,0 +1,5 @@
+  <ComputerType computerType="linuxmachine"
+                manufacturer="unknown"
+                name="linuxmachine"
+                nicSpeed="1000"
+                opSys="linux"/>

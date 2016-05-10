@@ -1,0 +1,5 @@
+  <EclSchedulerProcess build="_"
+                       buildSet="eclscheduler"
+                       daliServers="mydali"
+                       description="EclScheduler process"
+                       name="myeclscheduler">

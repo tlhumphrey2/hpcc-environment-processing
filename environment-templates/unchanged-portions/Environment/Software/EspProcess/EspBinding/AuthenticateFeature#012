@@ -1,0 +1,5 @@
+    <AuthenticateFeature authenticate="Yes"
+                         description="Access to despraying of files"
+                         path="FileDesprayAccess"
+                         resource="FileDesprayAccess"
+                         service="ws_fs"/>
