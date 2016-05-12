@@ -34,28 +34,27 @@ print "DEBUG: Size of file is ",length($_),"\n";
 $one_level='.';
 
 local @line = split(/\n/, $_);
-($name, $begin, $end)=getAllCurrentLevelAttributes('', '', 0, $#line);
-processENV('', $name, $begin, $end);
+parseENV('', '', '', 0, $#line);
 #================================================================
-sub processENV{
-my ( $indent, $parent, $parent_begin, $parent_end )=@_;
-print "DEBUG: Entering processENV. parent=\"$parent\", parent_begin=$parent_begin, parent_end=$parent_end, line\[parent_begin]=\"$line[$parent_begin]\"\n";
+sub parseENV{
+my ( $indent, $parent_path, $parent, $parent_begin, $parent_end )=@_;
+print "DEBUG: Entering parseENV. parent=\"$parent\", parent_path=\"$parent_path\", parent_begin=$parent_begin, parent_end=$parent_end, line\[parent_begin]=\"$line[$parent_begin]\"\n";
 
-  ($name, $begin, $end)=getAllCurrentLevelAttributes($indent, $parent, $parent_begin, $parent_end);
-print "DEBUG: In processENV. parent=\"$parent\", Number of Attributes is ",scalar(@name),"\n";
-  for( my $i=0; $i < scalar(@$name); $i++){
-    my $name = $name->[$i];
-    my $begin = $begin->[$i];
-    my $end = $end->[$i];
-    print "$indent$name\n";
-print "DEBUG: In processENV. For LOOP. name=\"$name\", begin=\"$begin\", end=\"$end\"\n";
-    if ( $line[$end] =~ /\<\/$name>/ ){
-       my $child_begin=$begin+1;
-       my $child_end=$end-1;
-print "DEBUG: In processENV. Just before call to processENV. \"$name\" has children. child_begin=\"$child_begin\", child_end=\"$child_end\"\n";
-       my $parent=$name;
-       processENV("$indent ", $parent, $begin, $end);
-print "DEBUG: In processENV. Return from processENV. parent=\"$parent\", parent_begin=$parent_begin, parent_end=$parent_end\n";
+  my $begin=$parent_begin+1;
+  my $end=(($parent_begin!=$parent_end) && ($line[$parent_end]=~/\<\/$parent>/))? $parent_end-1 : $parent_end ;
+  my ($rname, $rbegin, $rend)=getAllCurrentLevelAttributes($indent, $parent, $begin, $end);
+print "DEBUG: In parseENV. Just after call to getAllCurrentLevelAttributes parent=\"$parent\", Number of Attributes is ",scalar(@$name),"\n";
+  for( my $i=0; $i < scalar(@$rname); $i++){
+    my $cname = $rname->[$i];
+    my $cbegin = $rbegin->[$i];
+    my $cend = $rend->[$i];
+    print "$indent$cname\n";
+print "DEBUG: In parseENV. In For LOOP. i=$i, cname=\"$cname\", cbegin=\"$cbegin\", cend=\"$cend\"\n";
+    if ( ( $cbegin!=$cend ) && ( $line[$cend] =~ /\<\/$cname>/ ) ){
+print "DEBUG: In parseENV. Just before call to parseENV. \"$cname\" has children. cbegin=\"$cbegin\", cend=\"$cend\"\n";
+       my $path=($parent_path eq '')? $cname : "$parent_path.$cname" ;
+       parseENV("$indent ", $path, $cname, $cbegin, $cend);
+print "DEBUG: In parseENV. Return from parseENV. i=$i, parent=\"$cname\", path=\"$path\", parent_begin=",$cbegin,", parent_end=",$cend,"\n";
     }
   }
 }
@@ -65,7 +64,8 @@ my ( $indent, $parent, $parent_begin, $parent_end)=@_;
 print "DEBUG: Entering getAllCurrentLevelAttributes. indent=\"$indent\", parent=\"$parent\", parent_begin=$parent_begin, parent_end=$parent_end\n";
    my (@name, @begin, @end);
    my $first=1;
-   for ($i=$parent_begin; $i <= $parent_end; $i++){
+   my $prev_name='';
+   for ( my $i=$parent_begin; $i <= $parent_end; $i++){
      my ($name, $begin, $end);
      if ( $line[$i] =~ /^$indent\<(\w+)\b/ ){
        push @name, $1;
