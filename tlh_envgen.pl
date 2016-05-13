@@ -4,6 +4,7 @@ print "DEBUG: thisDir=\"$thisDir\"\n";
 require "$thisDir/env_functions.pl";
 
 =pod
+tlh_envgen.pl -conf 160513-two-thor-one-roxie-hpcc.cfg 160513-two-thor-one-roxie-hpcc.xml &> 160513-two-thor-one-roxie-hpcc-tlh_envgen.log
 tlh_envgen.pl -conf thor-and-roxie-hpcc.cfg thor-and-roxie-hpcc.xml &> thor-and-roxie-hpcc-tlh_envgen.log
 tlh_envgen.pl -conf two-thor-hpcc.cfg two-thor-hpcc-environment.xml &> two-thor-hpcc-tlh_envgen.log
 tlh_envgen.pl -conf 20160510-1.2-hpcc.cfg 20160510-1.2-environment.xml &> 20160510-1.2-tlh_envgen.log
