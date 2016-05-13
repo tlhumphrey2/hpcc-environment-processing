@@ -134,8 +134,12 @@ my $ptr; # This is a undefined reference pointer
     elsif( /^\s*((?:EnvSettings|Hardware|Programs|Software)(?:\.\w+)*):(\w+s*=\s*\".+")\s*$/ ){
        my $path=$1;
        my $assignment=$2;
+
+       die "FATAL ASSIGNMENT ERROR: Assignment, \"$_\", is for ThorCluster but NO THORs in configuration." if ( ((scalar(@thor)==0) && ($path=~/Software\.ThorCluster/)) ); 
+       die "FATAL ASSIGNMENT ERROR: Assignment, \"$_\", is for RoxieCluster but NO ROXIEs in configuration." if ( ((scalar(@roxie)==0) && ($path=~/Software\.RoxieCluster/)) ); 
        
        my $pathexists=inAssignments($path);
+
        if ( $pathexists ){
          push @{$pathexists->{"assignments"}}, $assignment;
        }
@@ -252,7 +256,7 @@ sub my_mkdir{
 my ( $dir )=@_;
   $dir=UniquePath($dir);
   mkdir $dir if ! -e $dir;
-#print "DEBUG: In my_mkdir. dir=\"$dir\"\n";
+print "DEBUG: Leaving my_mkdir. dir=\"$dir\"\n";
 return $dir;
 }
 #================================================================
