@@ -194,6 +194,16 @@ print "DEBUG: ROXIE PROCESSING. farm_number=\"$farm_number\", ip=\"$ip\", pc_nam
       s/{FARM_PORT_NUMBER}/$port/s;
       print "saveFile\(\$_,\"$RoxieCluster/RoxieFarmProcess\"\)\;\n";
       saveFile($_,"$RoxieCluster/RoxieFarmProcess");
+
+      if ( scalar(@ip)==1 ){
+        my $farm_number=sprintf "%d",$i+2;
+        $_=$farm_xml;
+        s/{FARM_NUMBER}/$farm_number/gs;
+        my $port = 0 ;
+        s/{FARM_PORT_NUMBER}/$port/s;
+        print "saveFile\(\$_,\"$RoxieCluster/RoxieFarmProcess\"\)\;\n";
+        saveFile($_,"$RoxieCluster/RoxieFarmProcess");
+      }
    
       $_=$server_xml;
       s/{COMPUTER_NAME}/$pc_name/sg;
@@ -331,7 +341,7 @@ for ( my $i=0; $i < scalar(@assignment); $i++){
 
      $path =~ s/\./\*\//g;
      $path = "$new_environment/Environment/$path";
-     $path = "$path $path#*";
+     $path = "$path $path#*" if -e "$path#*";
 print "DEBUG: In ASSIGNMENT. Just before 'ls -1 \$path' path=\"$path\"\n";
      my $paths = `ls -1 $path`;
      my @path=split(/\n/,$paths);
