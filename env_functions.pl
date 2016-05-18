@@ -12,8 +12,7 @@
 #    ip
 #  @assignment, array of assignment statements, where each entry has:
 #    path, where assignment must be placed
-#    parameter, name of parameter to be set
-#    value, assigned value of parameter
+#    assignment
 #  %pc_name, hash where key is ip and value is computer name
 #
 =pod
@@ -50,6 +49,7 @@ my @support_name=(dali,dfu,eclagent,eclcc,eclsch,esp,sasha,dropzone);
 my $support_re='(?:(?i)\b(?:'.join("|",@support_name).')\b)';
 my %roxie_seen=();
 my %thor_seen=();
+my %assignment=();
 my $support_default_computer;
 my $ptr; # This is a undefined reference pointer
 
@@ -134,20 +134,21 @@ my $ptr; # This is a undefined reference pointer
     elsif( /^\s*((?:EnvSettings|Hardware|Programs|Software)(?:\.\w+)*):(\w+s*=\s*\".+")\s*$/ ){
        my $path=$1;
        my $assignment=$2;
+       $assignment{"$1:$2"}=1;
 
        die "FATAL ASSIGNMENT ERROR: Assignment, \"$_\", is for ThorCluster but NO THORs in configuration." if ( ((scalar(@thor)==0) && ($path=~/Software\.ThorCluster/)) ); 
        die "FATAL ASSIGNMENT ERROR: Assignment, \"$_\", is for RoxieCluster but NO ROXIEs in configuration." if ( ((scalar(@roxie)==0) && ($path=~/Software\.RoxieCluster/)) ); 
-       
-       my $pathexists=inAssignments($path);
 
-       if ( $pathexists ){
-         push @{$pathexists->{"assignments"}}, $assignment;
-       }
-       else{
-         push @assignment, entity("path"=>$path);
-         push @{$assignment[$#assignment]->{"assignments"}}, $assignment;
-         
-       }
+       addAssignment( $path, $assignment );
+    }
+  }
+
+  # If there is a THOR but only one IP (which means master and slaves on same IP) then add this assignment statement: Software.ThorCluster.ahead:localThor="true"
+  if (( scalar(keys %ip)==1 ) && (scalar(@thor)>0) ){
+    my @AllAssignments=keys %assignment;
+    my @ExistingAssignmentsMatchinglocalThor=grep(/Software\.ThorCluster\.ahead:localThor=/,@AllAssignments);
+    if ( scalar(@ExistingAssignmentsMatchinglocalThor)==0 ){
+       addAssignment( 'Software.ThorCluster.ahead', 'localThor="true"' );
     }
   }
   
@@ -228,6 +229,21 @@ my $ptr; # This is a undefined reference pointer
      }
      die "FATAL ERROR: Two or more ROXIEs have different number of instances.\n" if $HaveDifferentSlaveNumbers;
   }
+}
+#-----------------------------------------------
+sub addAssignment{       
+my ( $path, $assignment )=@_;
+
+       my $pathexists=inAssignments($path);
+
+       if ( $pathexists ){
+         push @{$pathexists->{"assignments"}}, $assignment;
+       }
+       else{
+         push @assignment, entity("path"=>$path);
+         push @{$assignment[$#assignment]->{"assignments"}}, $assignment;
+         
+       }
 }
 #-----------------------------------------------
 sub inAssignments{
