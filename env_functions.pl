@@ -117,7 +117,7 @@ my $ptr; # This is a undefined reference pointer
 
            if ( $hpcc_component =~ /^master$/i ){
               $thorptr->{master_ip}=$ip;
-              $support_default_computer = $thorptr if $support_default_computer eq '';
+              $support_default_computer = $ip if $support_default_computer eq '';
            }
        }
     }
@@ -151,11 +151,22 @@ my $ptr; # This is a undefined reference pointer
     }
   }
   
-  # Handling missing support functions (i.e. they are not in hpcc configuration file)
+  # Handling missing support functions (i.e. they are not in hpcc configuration file). So, give them an IP address.
+  if ( $support_default_computer eq '' ){
+     if ( scalar(@roxie) > 0 ){
+        my $ptr=$roxie[0];
+	my @ip=@{$ptr->{"roxie_ips"}};
+	$support_default_computer=$ip[0];
+     }
+     else{
+        die "FATAL ERROR: configfile=\"$configfile\" DOES NOT HAVE THOR or ROXIE.\n";
+     }
+  }
+
   my @more_support=();
   foreach (@support_name){
      if ( ! inSupport($_) ){
-       push @more_support, entity("name"=>$_,"ip"=> $support_default_computer->{master_ip});
+       push @more_support, entity("name"=>$_,"ip"=> $support_default_computer);
      }
   }
   
