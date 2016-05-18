@@ -336,6 +336,10 @@ print "DEBUG: In foreach. roxie_name\"$roxie_name\"\n";
 #     8. saveFile($_,$path);
 
 print "===================== ASSIGNMENTs =====================\n";
+if (scalar(@thor)==1){
+   my $master_ip=$thor[0]->{master_ip};
+   my $slave_ip=@{$thor[0]->{slave_ips}}[0];
+}
 for ( my $i=0; $i < scalar(@assignment); $i++){
      my $path=$assignment[$i]->{path};
      my $assignments=$assignment[$i]->{assignments};
