@@ -350,12 +350,13 @@ for ( my $i=0; $i < scalar(@assignment); $i++){
 print "DEBUG: In ASSIGNMENT. Just before 'ls -1 \$path' path=\"$path\"\n";
      my $paths = `ls -1 $path`;
      my @path=split(/\n/,$paths);
-     @path = grep(!/cannot access/,@path); # remove access errors
+     @path=grep(!/cannot access/,@path); # remove access errors
      @path=grep(!/cannot access/,@path); # remove errors
 print "DEBUG: In ASSIGNMENT. \@path=(",join(",",@path),")\n";
 
      foreach my $path (@path){
 print "DEBUG: In ASSIGNMENT. In foreach \@path loop. path=\"$path\"\n";
+       $path = "$path/ahead" if -d $path; # e.g. assignment: Software.ThorCluster:slavesPerNode="4" (assignment will be in ahead)
        $_=`cat $path`; 
        foreach my $assignment (@$assignments){
 print "DEBUG: In ASSIGNMENT. foreach \@assignment loop. assignment=\"$assignment\"\n";
