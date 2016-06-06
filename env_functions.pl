@@ -141,6 +141,9 @@ my $ptr; # This is a undefined reference pointer
 
        addAssignment( $path, $assignment );
     }
+    else{
+       print STDERR "WARNING: This line of cfg file not recognized: \"$_\". Possibly assignment statement with quotes missing.\n";
+    }
   }
 
   # If there is a THOR but only one IP (which means master and slaves on same IP) then add this assignment statement: Software.ThorCluster.ahead:localThor="true"
@@ -233,8 +236,10 @@ my $ptr; # This is a undefined reference pointer
 #-----------------------------------------------
 sub addAssignment{       
 my ( $path, $assignment )=@_;
+#print "DEBUG: Entering addAssignment. path=\"$path\", assignment=\"$assignment\"\n";
 
        my $pathexists=inAssignments($path);
+#print "DEBUG: In addAssignment. pathexists=\"$pathexists\"\n";
 
        if ( $pathexists ){
          push @{$pathexists->{"assignments"}}, $assignment;
