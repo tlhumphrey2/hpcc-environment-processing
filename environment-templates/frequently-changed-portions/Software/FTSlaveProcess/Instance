@@ -1,4 +1,5 @@
    <Instance computer="{COMPUTER_NAME}"
-             directory="/var/lib/HPCCSystems/myeclagent"
+             directory="/var/lib/HPCCSystems/myftslave"
              name="s{NUMBER}"
-             netAddress="{COMPUTER_IP_ADDRESS}"/>
+             netAddress="{COMPUTER_IP_ADDRESS}"
+	     program="/opt/HPCCSystems/bin/ftslave"/>
