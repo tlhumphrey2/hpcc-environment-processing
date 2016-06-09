@@ -231,9 +231,9 @@ print "DEBUG: thor_name=\"$thor_name\", THOR IPs=(",join(",",@slave_ip),")\n";
     my $ThorCluster=my_mkdir("$new_environment/Environment/Software/ThorCluster");
     system("cp -r $change_source/Software/ThorCluster/* $ThorCluster");
 
-    # Remove template any files from $unchange_source ThorCluster
-    print("rm $ThorCluster/*\n");
-    system("rm $ThorCluster/*");
+    # Remove template any files from $change_source ThorCluster
+    print("rm $ThorCluster/ahead $ThorCluster/ThorMasterProcess $ThorCluster/ThorSlaveProcess\n");
+    system("rm $ThorCluster/ahead $ThorCluster/ThorMasterProcess $ThorCluster/ThorSlaveProcess");
     
     # To ahead add MASTER_COMPUTER_NAME and THOR_NAME
     my $ahead_source="$change_source/Software/ThorCluster/ahead";

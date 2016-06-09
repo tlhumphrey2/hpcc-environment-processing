@@ -1,4 +1,5 @@
    <Instance computer="{COMPUTER_NAME}"
-             directory="/var/lib/HPCCSystems/myeclagent"
+             directory="/var/lib/HPCCSystems/mysasha"
              name="s1"
-             netAddress="{COMPUTER_IP_ADDRESS}"/>
+             netAddress="{COMPUTER_IP_ADDRESS}"
+	     port="8877"/>
