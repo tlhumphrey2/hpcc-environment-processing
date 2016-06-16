@@ -4,6 +4,7 @@ print "DEBUG: thisDir=\"$thisDir\"\n";
 require "$thisDir/env_functions.pl";
 
 =pod
+tlh_envgen.pl -conf 20160509-1.3-hpcc.cfg test-wssql-environment.xml &> test-wssql-tlh_envgen.log
 tlh_envgen.pl -conf 160513-two-thor-one-roxie-hpcc.cfg 160513-two-thor-one-roxie-hpcc.xml &> 160513-two-thor-one-roxie-hpcc-tlh_envgen.log
 tlh_envgen.pl -conf thor-and-roxie-hpcc.cfg thor-and-roxie-hpcc.xml &> thor-and-roxie-hpcc-tlh_envgen.log
 tlh_envgen.pl -conf two-thor-hpcc.cfg two-thor-hpcc-environment.xml &> two-thor-hpcc-tlh_envgen.log
@@ -29,6 +30,7 @@ $configfile= $opt_conf || die "Usage ERROR: $0 -conf <hpcc configuration filenam
 print "configfile=\"$configfile\"\n";
 #===============END Get Arguments ================================
 
+# Directories to source templates
 $change_source="$thisDir/environment-templates/frequently-changed-portions";
 $unchange_source="$thisDir/environment-templates/unchanged-portions";
 
@@ -47,7 +49,6 @@ if ( -e $new_environment ){
 print("cp -r $unchange_source $new_environment\n");
 system("cp -r $unchange_source $new_environment");
 
-#goto "THORPROCESS"; # DEBUG DEBUG DEBUG
 #------------------------------------------------------------------------------------------------------------
 # 2. Fill new_environment/Environment/Hardware with $change_source/Hardware/Computer attributes -- one for each
 #   instance in the hpcc configuration file. The 1st will be named Computer. Each one after the 1st will be named
@@ -65,6 +66,7 @@ system("cp -r $unchange_source $new_environment");
    print "saveFile\(\$_,\"\$new_environment/Environment/Hardware/Computer\"\)\;\n";
    saveFile($_,"$new_environment/Environment/Hardware/Computer");
  }
+
 #------------------------------------------------------------------------------------------------------------
 # 3. In new_environment/Environment/Software/DafilesrvProcess, for each computer placed in Hardware, above,
 #     add $change_source/Software/DafilesrvProcess/Instance and $change_source/Software/FTSlaveProcess/Instance. Fill
@@ -108,8 +110,6 @@ EclSchedulerProcess    EclSchedulerProcess    eclsch
 EspProcess             EspProcess             esp
 SashaServerProcess     SashaServerProcess     sasha
 EOFF
-
-$support_re='\b(?:dali|dfu|eclagent|eclcc|eclsch|esp|sasha|dropzone)\b';
 
 @component_table=split(/\n/,$component_table);
 foreach (@component_table){
@@ -321,7 +321,30 @@ print "DEBUG: In foreach. roxie_name\"$roxie_name\"\n";
 }
 
 #------------------------------------------------------------------------------------------------------------
-# 9. If there are assignment statements like the following:
+# 9. If wssql exists, then 1) add its BuildSet to Programs/Build, 2) add EspBinding to EspProcess and add
+#    its EspService to Software.
+if ( inSupport('wssql') ){
+  print "DEBUG: FOUND WSSQL. First add its BuildSet to Environment/Programs/Build.\n";
+  # Add its BuildSet to Programs/Build
+  $_=`cat $change_source/Programs/Build/BuildSet#wssql`;
+  print "saveFile\(\$_,\"\$new_environment/Environment/Programs/Build/BuildSet\"\)\;\n";
+  saveFile($_,"$new_environment/Environment/Programs/Build/BuildSet");
+
+  # Add its EspService to Software
+  print "DEBUG: FOUND WSSQL. Second, add its EspService to Environment/Software.\n";
+  $_=`cat $change_source/Software/EspService#wssql`;
+  print "saveFile\(\$_,\"\$new_environment/Environment/Software/EspService\"\)\;\n";
+  saveFile($_,"$new_environment/Environment/Software/EspService");
+
+  # Add EspBinding to EspProcess
+  print "DEBUG: FOUND WSSQL. Thrid, add its EspBinding to Environment/Software/EspProcess.\n";
+  $_=`cat $change_source/Software/EspProcess/EspBinding#wssql`;
+  print "saveFile\(\$_,\"\$new_environment/Environment/Software/EspProcess/EspBinding\"\)\;\n";
+  saveFile($_,"$new_environment/Environment/Software/EspProcess/EspBinding");
+}
+
+#------------------------------------------------------------------------------------------------------------
+# A. If there are assignment statements like the following:
 #     
 #     Software.ThorCluster.ahead:slavesPerNode="4"
 #     
