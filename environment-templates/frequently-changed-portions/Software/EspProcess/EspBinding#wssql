@@ -1,0 +1,30 @@
+   <EspBinding defaultForPort="true"
+               defaultServiceVersion=""
+               name="myws_sql"
+               port="8510"
+               protocol="http"
+               resourcesBasedn="ou=WsSql,ou=EspServices,ou=ecl"
+               service="myws_sql"
+               workunitsBasedn="ou=workunits,ou=ecl"
+               wsdlServiceAddress="">
+    <Authenticate access="Read"
+                  description="Root access to WS SQL service"
+                  path="/"
+                  required="Read"
+                  resource="WsSqlAccess"/>
+    <AuthenticateFeature authenticate="Yes"
+                         description="Access to WS SQL service"
+                         path="WsSQLAccess"
+                         resource="WsSqlAccess"
+                         service="ws_sql"/>
+    <AuthenticateFeature authenticate="Yes"
+                         description="Access to own workunits"
+                         path="OwnWorkunitsAccess"
+                         resource="OwnWorkunitsAccess"
+                         service="ws_sql"/>
+    <AuthenticateFeature authenticate="Yes"
+                         description="Access to others&apos; workunits"
+                         path="OthersWorkunitsAccess"
+                         resource="OthersWorkunitsAccess"
+                         service="ws_sql"/>
+   </EspBinding>

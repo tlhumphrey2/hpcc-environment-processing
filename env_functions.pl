@@ -1,4 +1,10 @@
 #!/usr/bin/perl
+#=======================================================
+# Global Variables used by other programs that use this.
+#=======================================================
+@support_name=(dali,dfu,eclagent,eclcc,eclsch,esp,sasha,dropzone,wssql);
+$support_re='(?:(?i)\b(?:'.join("|",@support_name).')\b)';
+
 # DATA Structures for saving this info
 #  @thor, array of THORs, where each entry has:
 #    name
@@ -45,8 +51,8 @@ Software.ThorCluster.ahead:globalMemorySize="14000"
 =cut
 sub getHPCCConfiguration{
 my ($configfile)=@_;
-my @support_name=(dali,dfu,eclagent,eclcc,eclsch,esp,sasha,dropzone);
-my $support_re='(?:(?i)\b(?:'.join("|",@support_name).')\b)';
+my @hpcc_component=(master,slave,roxie);
+my $hpcc_component_re='(?:(?i)\b(?:'.join("|",@hpcc_component).')\b)';
 my %roxie_seen=();
 my %thor_seen=();
 my %assignment=();
@@ -61,6 +67,7 @@ my $ptr; # This is a undefined reference pointer
   my @roxiename = ("myroxie"); # default roxie name
   foreach (@line){
     next if /^\s*#/ || /^\s*$/; #skip comments and blank lines
+
     if ( /^\s*thor names are:/i ){
        my $names = $1 if /^\s*thor names are:\s*([a-zA-Z].*[a-zA-Z0-9_])\s*$/i;
        @thorname=split(/[\s,]+/,$names);
@@ -70,7 +77,7 @@ my $ptr; # This is a undefined reference pointer
        @roxiename=split(/[\s,]+/,$names);
     }
     # IP found a master, slave or roxie
-    elsif ( /^\s*(\d+\.\d+\.\d+\.\d+)\s+(?:([a-zA-Z]\w+)\s+)?((?i)(?:master|slave|roxie))(?::([a-zA-Z]\w+))?/ ){
+    elsif ( /^\s*(\d+\.\d+\.\d+\.\d+)\s+(?:([a-zA-Z]\w+)\s+)?((?i)$hpcc_component_re)(?::([a-zA-Z]\w+))?/ ){
        my $ip=$1;
        my $computer_name=( $2 ne '' )? $2 : ($pc_name{$ip} ne '')? $pc_name{$ip} : sprintf "node%06d",(split(/\./,$ip))[3];
        my $hpcc_component=$3;
@@ -144,6 +151,14 @@ my $ptr; # This is a undefined reference pointer
     else{
        print STDERR "WARNING: This line of cfg file not recognized: \"$_\". Possibly assignment statement with quotes missing.\n";
     }
+  }
+
+  # IF wssql exists, make sure it has the same IP as esp.
+  my $w=inSupport('wssql');
+  my $e=inSupport('esp');
+  if ( ( $w != 0 ) && ( $w->{ip} ne $e->{ip} ) ){
+    print STDERR "WsSQL DOES NOT have the same ip as ESP ($w->{ip} vs $e->{ip}). So, we are changing WsSQL's IP so it is the same as ESP's.\n";
+    $w->{ip}=$e->{ip};
   }
 
   # If there is a THOR but only one IP (which means master and slaves on same IP) then add this assignment statement: Software.ThorCluster.ahead:localThor="true"
@@ -295,12 +310,9 @@ return $dir;
 sub UniquePath{
 my ( $path )=@_;
 #print "DEBUG: Entering UniquePath. path=\"$path\".\n";
-#print "DEBUG: In UniquePath. Keys to \%PathExists are (",join("\n   DEBUG: In UniquePath. Keys to \%PathExists are ",keys %PathExists),").\n";
-  $PathExists{$path}=1 if -e $path; # Need this in case $path exists but hasn't been seen by this code before
-  if ( $PathExists{$path} ){
+  if ( -e $path ){
     $path = modifyName($path);
   }
-  $PathExists{$path}=1;
 print "DEBUG: Leaving UniquePath. path=\"$path\".\n";
 return $path;
 }
@@ -308,12 +320,11 @@ return $path;
 sub modifyName{
 my ( $path )=@_;
 #print "DEBUG: Entering modifyName. path=\"$path\".\n";
-     while ( $PathExists{$path} ){
+     while ( -e $path ){
        my $n = ( $path =~ s/#(\d+)$// )? $1 : 0 ;
        $path = sprintf "%s#%03d", $path,$n+1;
 #print "DEBUG: In modifyName. After mod. path=\"$path\".\n";
      }
-     $PathExists{$path}=1;
 #print "DEBUG: Leaving modifyName. path=\"$path\".\n";
  return $path;
 }
