@@ -4,17 +4,17 @@ print "DEBUG: thisDir=\"$thisDir\"\n";
 require "$thisDir/env_functions.pl";
 
 =pod
-tlh_envgen.pl -conf 20160509-1.3-hpcc.cfg test-wssql-environment.xml &> test-wssql-tlh_envgen.log
-tlh_envgen.pl -conf 160513-two-thor-one-roxie-hpcc.cfg 160513-two-thor-one-roxie-hpcc.xml &> 160513-two-thor-one-roxie-hpcc-tlh_envgen.log
-tlh_envgen.pl -conf thor-and-roxie-hpcc.cfg thor-and-roxie-hpcc.xml &> thor-and-roxie-hpcc-tlh_envgen.log
-tlh_envgen.pl -conf two-thor-hpcc.cfg two-thor-hpcc-environment.xml &> two-thor-hpcc-tlh_envgen.log
-tlh_envgen.pl -conf 20160510-1.2-hpcc.cfg 20160510-1.2-environment.xml &> 20160510-1.2-tlh_envgen.log
-tlh_envgen.pl -conf 20160509-1.3-hpcc.cfg 20160509-1.3-environment.xml &> 20160509-1.3-tlh_envgen.log
-tlh_envgen.pl -conf 20160509-1.2-hpcc.cfg 20160509-1.2-environment.xml &> 20160509-1.2-tlh_envgen.log
-tlh_envgen.pl -conf 20160509-1-hpcc.cfg 20160509-1-environment.xml &> 20160509-tlh_envgen.log
-tlh_envgen.pl -conf 20160507-2-hpcc.cfg 20160509-1-environment.xml &> 20160509-tlh_envgen.log
-tlh_envgen.pl -conf 20160507-2-hpcc.cfg new_20160507-2-environment.xml &> 20160507-tlh_envgen.log
-tlh_envgen.pl -conf rbi_hpcc.cfg new_10.60.0.14-20160503-environment.xml
+tlh_envgen.pl -conf 20160509-1.3-hpcc.cfg
+tlh_envgen.pl -conf 160513-two-thor-one-roxie-hpcc.cfg
+tlh_envgen.pl -conf thor-and-roxie-hpcc.cfg
+tlh_envgen.pl -conf two-thor-hpcc.cfg
+tlh_envgen.pl -conf 20160510-1.2-hpcc.cfg
+tlh_envgen.pl -conf 20160509-1.3-hpcc.cfg
+tlh_envgen.pl -conf 20160509-1.2-hpcc.cfg
+tlh_envgen.pl -conf 20160509-1-hpcc.cfg
+tlh_envgen.pl -conf 20160507-2-hpcc.cfg
+tlh_envgen.pl -conf 20160507-2-hpcc.cfg
+tlh_envgen.pl -conf rbi_hpcc.cfg
 =cut
 
 #================== Get Arguments ================================
@@ -34,8 +34,7 @@ print "configfile=\"$configfile\"\n";
 $change_source="$thisDir/environment-templates/frequently-changed-portions";
 $unchange_source="$thisDir/environment-templates/unchanged-portions";
 
-$infile = shift @ARGV;
-$new_environment=( $infile=~/^(.+)\.xml$/ )? $1 : $infile ;
+$new_environment=( $configfile=~/^(.+)\.cfg$/ )? "$1-environment" : "$configfile-environment" ;
 print "new_environment=\"$new_environment\"\n";
 
 getHPCCConfiguration($configfile);
