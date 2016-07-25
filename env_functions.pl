@@ -155,6 +155,7 @@ my $ptr; # This is a undefined reference pointer
 
   # IF wssql exists, make sure it has the same IP as esp.
   my $w=inSupport('wssql');
+  print "DEBUG: w=\"$w\"\n";
   my $e=inSupport('esp');
   if ( ( $w != 0 ) && ( $w->{ip} ne $e->{ip} ) ){
     print STDERR "WsSQL DOES NOT have the same ip as ESP ($w->{ip} vs $e->{ip}). So, we are changing WsSQL's IP so it is the same as ESP's.\n";
@@ -184,7 +185,7 @@ my $ptr; # This is a undefined reference pointer
 
   my @more_support=();
   foreach (@support_name){
-     if ( ! inSupport($_) ){
+     if ( ($_ ne 'wssql') && ! inSupport($_) ){
        push @more_support, entity("name"=>$_,"ip"=> $support_default_computer);
      }
   }
