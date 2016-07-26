@@ -38,7 +38,7 @@ The command that creates the environment.xml file using the above configuration 
 
        tlh_envgen.pl -conf hpcc-system.cfg > tlh_envgen.log
 
-The file, tlh_envgen.log, contains a lot of information about what the program does. The name of the new environment.xml file is output on STDERR when the program does the output of the file.
+The file, tlh_envgen.log, contains a lot of information about what the program does. The name of the new environment.xml file is output on STDERR when the program outputs the file.
 
 ## Other content in this repository and its purpose
 
