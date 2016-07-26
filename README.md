@@ -40,7 +40,7 @@ The command that creates the environment.xml file using the above configuration 
 
 The file, tlh_envgen.log, contains a lot of information about what the program does. The name of the new environment.xml file is output on STDERR when the program does the output of the file.
 
-## Other contents of this repository and their purpose
+## Other content in this repository and its purpose
 
 1. environment-templates -- Directory containing environment.xml template files used by tlh_envgen.pl.
 2. ENV2NestedFolders.pl -- Takes as input an environment.xml file and produces a directory structure that matches the structure of the inputted xml file.
