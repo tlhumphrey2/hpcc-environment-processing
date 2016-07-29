@@ -37,7 +37,7 @@ processENV('', $name->[0], "$basename/$name->[0]");
 
 die "ERROR: Too few lines in \@line, i.e. ",scalar(@line),"\n" if scalar(@line) < 10;
 
-$outfile = "new_$outfile";
+$outfile = ( $outfile =~ /^(.+\/)([^\/]+)$/ )? "${1}new_$2" : "new_$outfile";
 print STDERR "Outputting $outfile\n";
 open(OUT,">$outfile") || die "Can't open for output \"$outfile\"\n";
 print OUT join("\n",@line),"\n";

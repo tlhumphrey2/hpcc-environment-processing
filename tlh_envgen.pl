@@ -413,5 +413,6 @@ print "DEBUG: In ASSIGNMENT. Just before saveFile. new_assignment=\"$new_assignm
 OUTPUTXMLFILE:
 #------------------------------------------------------------------------------------------------------------
 # A. Make environment.xml file from $new_environment
-print(" $thisDir/NestedFolders2ENV.pl $new_environment.xml \> NestedFolders2ENV-$new_environment.log\n");
-system("$thisDir/NestedFolders2ENV.pl $new_environment.xml > NestedFolders2ENV-$new_environment.log");
+my $NestedFolders2ENVLog=($new_environment =~ /^(.+\/)([^\/]+)$/ )? "${1}NestedFolders2ENV-$2.log" : "NestedFolders2ENV-$new_environment.log" ;
+print(" $thisDir/NestedFolders2ENV.pl $new_environment.xml \> $NestedFolders2ENVLog\n");
+system("$thisDir/NestedFolders2ENV.pl $new_environment.xml > $NestedFolders2ENVLog");
