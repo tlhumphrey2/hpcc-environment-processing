@@ -1,29 +1,3 @@
-| **Variable**                | **Assignment** | **type**  | **Description**                   | **Default**    |
-| :------------------------   | :------------: | :-------: | :------------------------------   | :----------:   |
-| `cidr_vpc`                  | required       | cidr      | vpc address space                 |                |
-| `cidr_private`              | required       | cidr      | vpc private network address space |                |
-| `cidr_private_a`            | required       | cidr      | vpc private network zone-a        |                |
-| `cidr_private_b`            | required       | cidr      | vpc private network zone-b        |                |
-| `cidr_private_c`            | required       | cidr      | vpc private network zone-c        |                |
-| `cidr_public_a`             | required       | cidr      | vpc public network zone-a         |                |
-| `cidr_public_b`             | required       | cidr      | vpc public network zone-b         |                |
-| `cidr_public_c`             | required       | cidr      | vpc public network zone-c         |                |
-| `cidr_net_mgmt`             | required       | cidr      | infrastructure management network |                |
-| `cidr_user_mgmt`            | required       | cidr      | internal user network             | `10.55.0.0/16` |
-| `cidr_webfarm`              | required       | cidr      | webfarm address space             | `10.53.0.0/16` |
-| `cidr_rfc_1918`             | required       | cidr      | internal address space            | `10.0.0.0/8`   |
-| `vpg_route`                 | optional       | cidr      | vpg internal route                | `10.0.0.0/8`   |
-| `environment`               | required       | string    | vpc tag                           |                |
-| `domain_name`               | required       | string    | dhcp dns search domain            |                |
-| `dns_servers`               | required       | list      | dhcp dns nameservers list         |                |
-| `dns_support`               | optional       | boolean   | vpc `DNS resolution` flag         | `true`         |
-| `dns_hostnames`             | optional       | boolean   | vpc `DNS hostnames` flag          | `true`         |
-| `bgp_asn`                   | required       | integer   | bpg autonomous system number      | `65000`        |
-| `cgw_primary_ip`            | required       | ip        | primary customer gateway ip       |                |
-| `cgw_primary_tag`           | required       | string    | primary customer gateway tag      |                |
-| `cgw_standby_ip`            | required       | ip        | standby customer gateway ip       |                |
-| `cgw_standby_tag`           | required       | string    | standby customer gateway tag      |                |
-
 ## hpcc-environment-processing
 
 The program, tlh_envgen.pl is the main purpose of this repository. As the name suggests, this program does the same thing that envgen does. That is, it creates an environment.xml file which then can be used to bring-up an HPCC System.
