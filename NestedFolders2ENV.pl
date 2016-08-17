@@ -9,16 +9,13 @@ perl NestedFolders2ENV.pl 52.33.221.178-environment.xml|less
 #================== Get Arguments ================================
 require "newgetopt.pl";
 if ( ! &NGetOpt(
+                "debug", "outfile=s"
                 ))      # Add Options as necessary
 {
   print STDERR "\n[$0] -- ERROR -- Invalid/Missing options...\n\n";
   exit(1);
 }
-$search = $opt_search;
-if ( $search !~ /^\s*$/ ){
-   @search=split(/\^/,$search);
-   print "\@search=(",join(", ",@search),")\n";
-}
+$debug = (defined($opt_debug))? 1 : 0;
 #===============END Get Arguments ================================
 
 
@@ -31,14 +28,14 @@ push @line, '<!-- Generated NestedFolders2ENV.pl -->';
 
 
 my $name=getDirectoryContents($basename); 
-print "DEBUG: After calling DirectoryContents. Number in \@name=",scalar(@$name),". First name is \"$name->[0]\".\n";
+print "DEBUG: After calling DirectoryContents. Number in \@name=",scalar(@$name),". First name is \"$name->[0]\".\n" if $debug;
 
 processENV('', $name->[0], "$basename/$name->[0]");
 
 die "ERROR: Too few lines in \@line, i.e. ",scalar(@line),"\n" if scalar(@line) < 10;
 
-$outfile = ( $outfile =~ /^(.+\/)([^\/]+)$/ )? "${1}new_$2" : "new_$outfile";
-print STDERR "Outputting $outfile\n";
+$outfile = ($opt_outfile !~ /^\s*$/ )? $opt_outfile : ( $outfile =~ /^(.+\/)([^\/]+)$/ )? "${1}new_$2" : "new_$outfile";
+print STDERR "Outputting $outfile\n" if $debug;
 open(OUT,">$outfile") || die "Can't open for output \"$outfile\"\n";
 print OUT join("\n",@line),"\n";
 close(OUT);
@@ -47,9 +44,9 @@ close(OUT);
 sub processENV{
 my ( $indent, $parent, $path )=@_;
   my $HasChildren=0;
-print "DEBUG: Entering processENV. parent=\"$parent\", path=\"$path\"\n";
+print "DEBUG: Entering processENV. parent=\"$parent\", path=\"$path\"\n" if $debug;
   my $name=getDirectoryContents($path);
-print "DEBUG: In processENV. After call to getDirectoryContents. parent=\"$parent\". Size of \@name=",scalar(@$name),", \@name=",join(",",@$name),"\n";
+print "DEBUG: In processENV. After call to getDirectoryContents. parent=\"$parent\". Size of \@name=",scalar(@$name),", \@name=",join(",",@$name),"\n" if $debug;
 
   # If there are children then make $parent directory
   if ( scalar(@$name) > 0 ){
@@ -57,19 +54,19 @@ print "DEBUG: In processENV. After call to getDirectoryContents. parent=\"$paren
      # Does parent header. If so then store it.
      if ( $name->[0] eq 'ahead' ){
 	my $head=`cat $path/$name->[0]`;
-print "DEBUG: In processENV. CHILDREN FOUND for \"$parent\" AND HEAD=\"$name->[0]\"\n";
+print "DEBUG: In processENV. CHILDREN FOUND for \"$parent\" AND HEAD=\"$name->[0]\"\n" if $debug;
 	$head=~ s/\n+$//;
 	push @line, $head;
 	shift @$name;
      }
      else{
-print "DEBUG: In processENV. CHILDREN FOUND for \"$parent\" AND NO HEAD\n";
+print "DEBUG: In processENV. CHILDREN FOUND for \"$parent\" AND NO HEAD\n" if $debug;
         my $name0 = ($parent =~ /^(\w+)#\d+$/)? $1 : $parent ;
 	push @line, "$indent<$name0>";
      }
   }
   else{
-print "DEBUG: In processENV. NO CHILDREN FOUND for \"$indent\<$name0\>\"\n";
+print "DEBUG: In processENV. NO CHILDREN FOUND for \"$indent\<$name0\>\"\n" if $debug;
      my $content=`cat $path`;
      $content=~ s/\n+$//;
      push @line, $content;
@@ -82,7 +79,7 @@ print "DEBUG: In processENV. NO CHILDREN FOUND for \"$indent\<$name0\>\"\n";
     $FirstAttribute=0;
 
     my $name0 = ($name =~ /^(\w+)#\d+$/)? $1 : $name ;
-    print "$indent$name0\n";
+    print "$indent$name0\n" if $debug;
 
     $cbegin = $begin+1;
     $cend=($line[$end] =~ /^$indent\<\/$name>/)? $end-1 : $end ;
@@ -97,7 +94,7 @@ print "DEBUG: In processENV. NO CHILDREN FOUND for \"$indent\<$name0\>\"\n";
 #================================================================
 sub getDirectoryContents{
 my ( $dir )=@_;
-print "DEBUG: Entering getDirectoryContents. dir=\"$dir\"\n";
+print "DEBUG: Entering getDirectoryContents. dir=\"$dir\"\n" if $debug;
   my @contents=();
   return \@content if -f $dir;
 
@@ -106,14 +103,14 @@ print "DEBUG: Entering getDirectoryContents. dir=\"$dir\"\n";
       closedir(DIR);
       @contents=grep( ! /^\./,@dir_entry); # Get the names of ONLY the metadata xml files
       my $nFiles=scalar(@contents);
-print "DEBUG: In getDirectoryContents. There are $nFiles files.\n";
+print "DEBUG: In getDirectoryContents. There are $nFiles files.\n" if $debug;
       die "ERROR: No files in this directory, \"$dir\"\n" if $nFiles==0;
       my ( $head )=grep(/^ahead$/,@contents);
-print "DEBUG: In getDirectoryContents. head=\"$head\"\n";
+print "DEBUG: In getDirectoryContents. head=\"$head\"\n" if $debug;
       @contents = grep(!/^ahead$/,@contents);
       if ( $head ne '' ){
       unshift @contents, $head;
-print "DEBUG: In getDirectoryContents. FOUND HEAD and placed as first of \@content: \"$contents[0]\"\n";
+print "DEBUG: In getDirectoryContents. FOUND HEAD and placed as first of \@content: \"$contents[0]\"\n" if $debug;
       }
   }
   else{
@@ -124,7 +121,7 @@ return \@contents;
 #================================================================
 sub saveHeader{
 my ( $attr_name, $path, $begin )=@_;
-print "DEBUG: Entering saveHeader. attr_name=\"$attr_name\", path=\"$path\", begin=\"$begin\"\n";
+print "DEBUG: Entering saveHeader. attr_name=\"$attr_name\", path=\"$path\", begin=\"$begin\"\n" if $debug;
    my (@name, @begin, @end);
    my $first=1;
    my @head=();
@@ -155,7 +152,7 @@ sub my_mkdir{
 my ( $dir )=@_;
   $dir=UniquePath($dir);
   mkdir $dir if ! -e $dir;
-print "DEBUG: In my_mkdir. dir=\"$dir\"\n";
+print "DEBUG: In my_mkdir. dir=\"$dir\"\n" if $debug;
 return $dir;
 }
 #================================================================
@@ -163,40 +160,40 @@ sub my_chdir{
 my ( $dir )=@_;
   $dir=UniquePath($dir);
   chdir($dir) or die "Could NOT cd into directory: \"$dir\". $!";
-print "DEBUG: In my_chdir. dir=\"$dir\"\n";
+print "DEBUG: In my_chdir. dir=\"$dir\"\n" if $debug;
 return $dir;
 }
 #================================================================
 sub UniquePath{
 my ( $path )=@_;
-print "DEBUG: Entering UniquePath. path=\"$path\".\n";
-print "DEBUG: In UniquePath. Keys to \%PathExists are (",join("\n   DEBUG: In UniquePath. Keys to \%PathExists are ",keys %PathExists),").\n";
+print "DEBUG: Entering UniquePath. path=\"$path\".\n" if $debug;
+print "DEBUG: In UniquePath. Keys to \%PathExists are (",join("\n   DEBUG: In UniquePath. Keys to \%PathExists are ",keys %PathExists),").\n" if $debug;
   if ( $PathExists{$path} ){
     $path = modifyName($path);
   }
   $PathExists{$path}=1;
-print "DEBUG: Leaving UniquePath. path=\"$path\".\n";
+print "DEBUG: Leaving UniquePath. path=\"$path\".\n" if $debug;
 return $path;
 }
 #================================================================
 sub modifyName{
 my ( $path )=@_;
-print "DEBUG: Entering modifyName. path=\"$path\".\n";
+print "DEBUG: Entering modifyName. path=\"$path\".\n" if $debug;
      while ( $PathExists{$path} ){
        my $n = ( $path =~ s/#(\d+)$// )? $1 : 0 ;
        $path = sprintf "%s#%03d", $path,$n+1;
-print "DEBUG: In modifyName. After mod. path=\"$path\".\n";
+print "DEBUG: In modifyName. After mod. path=\"$path\".\n" if $debug;
      }
      $PathExists{$path}=1;
-print "DEBUG: Leaving modifyName. path=\"$path\".\n";
+print "DEBUG: Leaving modifyName. path=\"$path\".\n" if $debug;
  return $path;
 }
 #================================================================
 sub saveFile{
 my ( $xml, $FileFullPath )=@_;
-print "DEBUG: In saveFile. FileFullPath=\"$FileFullPath\".\n";
+print "DEBUG: In saveFile. FileFullPath=\"$FileFullPath\".\n" if $debug;
    $FileFullPath=UniquePath($FileFullPath) ;
-print "DEBUG: In saveFile. After UniquePath FileFullPath=\"$FileFullPath\".\n";
+print "DEBUG: In saveFile. After UniquePath FileFullPath=\"$FileFullPath\".\n" if $debug;
    open(OUT,">$FileFullPath") || die "Can't open for output \"$FileFullPath\"\n";
    print OUT $xml;
    close(OUT);
