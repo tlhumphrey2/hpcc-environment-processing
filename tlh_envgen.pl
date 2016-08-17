@@ -1,8 +1,4 @@
 #!/usr/bin/perl
-$thisDir=( $0 =~ /^(.+)\// )? $1 : '.';
-print "DEBUG: thisDir=\"$thisDir\"\n";
-require "$thisDir/env_functions.pl";
-
 =pod
 tlh_envgen.pl -conf 20160509-1.3-hpcc.cfg
 tlh_envgen.pl -conf 160513-two-thor-one-roxie-hpcc.cfg
@@ -20,32 +16,38 @@ tlh_envgen.pl -conf rbi_hpcc.cfg
 #================== Get Arguments ================================
 require "newgetopt.pl";
 if ( ! &NGetOpt(
-		"conf=s"
+		"conf=s", "debug", "outfile=s", "envgen_path=s"
                 ))      # Add Options as necessary
 {
   print STDERR "\n[$0] -- ERROR -- Invalid/Missing options...\n\n";
   exit(1);
 }
 $configfile= $opt_conf || die "Usage ERROR: $0 -conf <hpcc configuration filename> (REQUIRED)\n";
-print "configfile=\"$configfile\"\n";
+$debug = (defined($opt_debug))? 1 : 0;
+print "configfile=\"$configfile\"\n" if $debug;
+$thisDir=$opt_envgen_path;
 #===============END Get Arguments ================================
+
+print STDERR "DEBUG: envgen_path=\"$opt_envgen_path\"\n";
+print STDERR "DEBUG: thisDir=\"$thisDir\"\n";
+require "$thisDir/env_functions.pl";
 
 # Directories to source templates
 $change_source="$thisDir/environment-templates/frequently-changed-portions";
 $unchange_source="$thisDir/environment-templates/unchanged-portions";
 
 $new_environment=( $configfile=~/^(.+)\.cfg$/ )? "$1-environment" : "$configfile-environment" ;
-print "new_environment=\"$new_environment\"\n";
+print "new_environment=\"$new_environment\"\n" if $debug;
 
 getHPCCConfiguration($configfile);
-print "Number of IPs is ",scalar(keys %ip),". Number of THORs is ",scalar(@thor),". Number of ROXIEs is ",scalar(@roxie),".Number of support functions is ",scalar(@support),".\n";
+print "Number of IPs is ",scalar(keys %ip),". Number of THORs is ",scalar(@thor),". Number of ROXIEs is ",scalar(@roxie),".Number of support functions is ",scalar(@support),".\n" if $debug;
 
 #------------------------------------------------------------------------------------------------------------
 # 1. cp -r $unchange_source $new_environment
 if ( -e $new_environment ){
    die "New directory, $new_environment, already EXISTS. Must delete before proceduring. EXITING.\n";
 }
-print("cp -r $unchange_source $new_environment\n");
+print("cp -r $unchange_source $new_environment\n") if $debug;
 system("cp -r $unchange_source $new_environment");
 
 #------------------------------------------------------------------------------------------------------------
@@ -62,7 +64,7 @@ system("cp -r $unchange_source $new_environment");
    $_=`cat $change_source/Hardware/Computer`;
    s/{COMPUTER_NAME}/$pc_name/sg;
    s/{COMPUTER_IP_ADDRESS}/$ip/sg;
-   print "saveFile\(\$_,\"\$new_environment/Environment/Hardware/Computer\"\)\;\n";
+   print "saveFile\(\$_,\"\$new_environment/Environment/Hardware/Computer\"\)\;\n" if $debug;
    saveFile($_,"$new_environment/Environment/Hardware/Computer");
  }
 
@@ -82,14 +84,14 @@ system("cp -r $unchange_source $new_environment");
    s/{NUMBER}/$number/sg;
    s/{COMPUTER_NAME}/$pc_name/sg;
    s/{COMPUTER_IP_ADDRESS}/$ip/sg;
-   print "saveFile\(\$_,\"\$new_environment/Environment/Software/DafilesrvProcess/Instance\"\)\;\n";
+   print "saveFile\(\$_,\"\$new_environment/Environment/Software/DafilesrvProcess/Instance\"\)\;\n" if $debug;
    saveFile($_,"$new_environment/Environment/Software/DafilesrvProcess/Instance");
 
    $_=`cat $change_source/Software/FTSlaveProcess/Instance`;
    s/{NUMBER}/$number/sg;
    s/{COMPUTER_NAME}/$pc_name/sg;
    s/{COMPUTER_IP_ADDRESS}/$ip/sg;
-   print "saveFile\(\$_,\"\$new_environment/Environment/Software/FTSlaveProcess/Instance\"\)\;\n";
+   print "saveFile\(\$_,\"\$new_environment/Environment/Software/FTSlaveProcess/Instance\"\)\;\n" if $debug;
    saveFile($_,"$new_environment/Environment/Software/FTSlaveProcess/Instance");
    $i++;
  }
@@ -126,14 +128,14 @@ foreach (@component_table){
     $pc_name=$pc_name{$ip};
   }
 
-  print "DEBUG: Support function. component=\"$component\", pc_name=\"$pc_name\", ip=\"$ip\"\n";
+  print "DEBUG: Support function. component=\"$component\", pc_name=\"$pc_name\", ip=\"$ip\"\n" if $debug;
 
   $source="$change_source/Software/$source/Instance";
   $target="$new_environment/Environment/Software/$target/Instance";
   $_=`cat $source`;
   s/{COMPUTER_NAME}/$pc_name/sg;
   s/{COMPUTER_IP_ADDRESS}/$ip/sg;
-  print "saveFile\(\$_,$target\)\;\n";
+  print "saveFile\(\$_,$target\)\;\n" if $debug;
   saveFile($_,$target);
 }
 #------------------------------------------------------------------------------------------------------------
@@ -145,10 +147,10 @@ my $target="$new_environment/Environment/Software/DropZone";
 my $ptr=inSupport('dropzone');
 my $ip=$ptr->{ip};
 my $pc_name=$pc_name{$ip};
-print "DEBUG: Adding DropZone. ip=$ip, pc_name=\"$pc_name\"\n";
+print "DEBUG: Adding DropZone. ip=$ip, pc_name=\"$pc_name\"\n" if $debug;
 $_=`cat $source`;
 s/{COMPUTER_NAME}/$pc_name/g;
-print "saveFile\(\$_,$target\)\;\n";
+print "saveFile\(\$_,$target\)\;\n" if $debug;
 saveFile($_,$target);
 #------------------------------------------------------------------------------------------------------------
 # 6. If there is a roxie defined in hpcc configuration file then copy the RoxieCluster structure by doing the following command:
@@ -161,12 +163,12 @@ saveFile($_,$target);
 #    it will be 0.
 #    
 #    The 2 parameters of RoxieFarmProcess that need to be modified are: COMPUTER_NAME and COMPUTER_IP_ADDRESS.
-print "DEBUG: ============================== Number of ROXIEs is ",scalar(@roxie)," ==============================\n";
+print "DEBUG: ============================== Number of ROXIEs is ",scalar(@roxie)," ==============================\n" if $debug;
 if ( scalar(@roxie) > 0 ){
   foreach my $roxie (@roxie){
     my $roxie_name=$roxie->{name};
     my @ip=@{$roxie->{roxie_ips}};
-print "DEBUG: roxie_name=\"$roxie_name\", ROXIE IPs=(",join(",",@ip),")\n";
+print "DEBUG: roxie_name=\"$roxie_name\", ROXIE IPs=(",join(",",@ip),")\n" if $debug;
     # Copy RoxieCluster in $new_environment
     my $RoxieCluster=my_mkdir("$new_environment/Environment/Software/RoxieCluster");
     system("cp -r $change_source/Software/RoxieCluster/* $RoxieCluster");
@@ -176,7 +178,7 @@ print "DEBUG: roxie_name=\"$roxie_name\", ROXIE IPs=(",join(",",@ip),")\n";
     # Get header from source
     my $_=`cat $change_source/Software/RoxieCluster/ahead`;
     s/{ROXIE_NAME}/$roxie_name/gs;
-    print "saveFile\(\$_,\"$RoxieCluster/ahead\"\)\;\n";
+    print "saveFile\(\$_,\"$RoxieCluster/ahead\"\)\;\n" if $debug;
     saveFile($_,"$RoxieCluster/ahead");
 
     for ( my $i=0; $i < scalar(@ip); $i++){
@@ -187,12 +189,12 @@ print "DEBUG: roxie_name=\"$roxie_name\", ROXIE IPs=(",join(",",@ip),")\n";
       my $server_source="$change_source/Software/RoxieCluster/RoxieServerProcess";
       my $farm_xml=`cat $farm_source`;
       my $server_xml=`cat $server_source`;
-print "DEBUG: ROXIE PROCESSING. farm_number=\"$farm_number\", ip=\"$ip\", pc_name=\"$pc_name\", roxie_name=\"$roxie_name\"\n";    
+print "DEBUG: ROXIE PROCESSING. farm_number=\"$farm_number\", ip=\"$ip\", pc_name=\"$pc_name\", roxie_name=\"$roxie_name\"\n" if $debug;    
       $_=$farm_xml;
       s/{FARM_NUMBER}/$farm_number/gs;
       my $port = ( $i==0 )? 9876 : 0 ;
       s/{FARM_PORT_NUMBER}/$port/s;
-      print "saveFile\(\$_,\"$RoxieCluster/RoxieFarmProcess\"\)\;\n";
+      print "saveFile\(\$_,\"$RoxieCluster/RoxieFarmProcess\"\)\;\n" if $debug;
       saveFile($_,"$RoxieCluster/RoxieFarmProcess");
 
       if ( scalar(@ip)==1 ){
@@ -201,14 +203,14 @@ print "DEBUG: ROXIE PROCESSING. farm_number=\"$farm_number\", ip=\"$ip\", pc_nam
         s/{FARM_NUMBER}/$farm_number/gs;
         my $port = 0 ;
         s/{FARM_PORT_NUMBER}/$port/s;
-        print "saveFile\(\$_,\"$RoxieCluster/RoxieFarmProcess\"\)\;\n";
+        print "saveFile\(\$_,\"$RoxieCluster/RoxieFarmProcess\"\)\;\n" if $debug;
         saveFile($_,"$RoxieCluster/RoxieFarmProcess");
       }
    
       $_=$server_xml;
       s/{COMPUTER_NAME}/$pc_name/sg;
       s/{COMPUTER_IP_ADDRESS}/$ip/sg;
-      print "saveFile\(\$_,\"$RoxieCluster/RoxieServerProcess\"\)\;\n";
+      print "saveFile\(\$_,\"$RoxieCluster/RoxieServerProcess\"\)\;\n" if $debug;
       saveFile($_,"$RoxieCluster/RoxieServerProcess");
     }
   }
@@ -217,21 +219,21 @@ print "DEBUG: ROXIE PROCESSING. farm_number=\"$farm_number\", ip=\"$ip\", pc_nam
 THORPROCESS:
 #------------------------------------------------------------------------------------------------------------
 # 7. Process all THOR Clusters
-print "DEBUG: ============================== Number of THORs is ",scalar(@thor)," ==============================\n";
+print "DEBUG: ============================== Number of THORs is ",scalar(@thor)," ==============================\n" if $debug;
 if ( scalar(@thor) > 0 ){
   foreach my $thor (@thor){
     my $thor_name=$thor->{name};
     my $master_ip=$thor->{master_ip};
     my $master_pc_name=$pc_name{$master_ip};
     my @slave_ip=@{$thor->{slave_ips}};
-print "DEBUG: thor_name=\"$thor_name\", THOR IPs=(",join(",",@slave_ip),")\n"; 
+print "DEBUG: thor_name=\"$thor_name\", THOR IPs=(",join(",",@slave_ip),")\n" if $debug; 
 
     # Copy ThorCluster in $new_environment
     my $ThorCluster=my_mkdir("$new_environment/Environment/Software/ThorCluster");
     system("cp -r $change_source/Software/ThorCluster/* $ThorCluster");
 
     # Remove template any files from $change_source ThorCluster
-    print("rm $ThorCluster/ahead $ThorCluster/ThorMasterProcess $ThorCluster/ThorSlaveProcess\n");
+    print("rm $ThorCluster/ahead $ThorCluster/ThorMasterProcess $ThorCluster/ThorSlaveProcess\n") if $debug;
     system("rm $ThorCluster/ahead $ThorCluster/ThorMasterProcess $ThorCluster/ThorSlaveProcess");
     
     # To ahead add MASTER_COMPUTER_NAME and THOR_NAME
@@ -239,14 +241,14 @@ print "DEBUG: thor_name=\"$thor_name\", THOR IPs=(",join(",",@slave_ip),")\n";
     $_=`cat $ahead_source`;
     s/{MASTER_COMPUTER_NAME}/$master_pc_name/s;
     s/{THOR_NAME}/$thor_name/s;
-    print "saveFile\(\$_,\"$ThorCluster/ahead\"\)\;\n";
+    print "saveFile\(\$_,\"$ThorCluster/ahead\"\)\;\n" if $debug;
     saveFile($_,"$ThorCluster/ahead");
     
     # To ThorMasterProcess add MASTER_COMPUTER_NAME
     my $ThorMasterProcess_source="$change_source/Software/ThorCluster/ThorMasterProcess";
     $_=`cat $ThorMasterProcess_source`;
     s/{MASTER_COMPUTER_NAME}/$master_pc_name/s;
-    print "saveFile\(\$_,\"$ThorCluster/ThorMasterProcess\"\)\;\n";
+    print "saveFile\(\$_,\"$ThorCluster/ThorMasterProcess\"\)\;\n" if $debug;
     saveFile($_,"$ThorCluster/ThorMasterProcess");
 
     # For each slave ip add ThorSlaveProcess and set COMPUTER_NAME and SLAVE_NUMBER
@@ -256,11 +258,11 @@ print "DEBUG: thor_name=\"$thor_name\", THOR IPs=(",join(",",@slave_ip),")\n";
       my $pc_name=$pc_name{$slave_ip};;
       my $ThorSlaveProcess_source="$change_source/Software/ThorCluster/ThorSlaveProcess";
       my $ThorSlaveProcess_xml=`cat $ThorSlaveProcess_source`;
-print "DEBUG: THOR PROCESSING. slave_number=\"$slave_number\", slave_ip=\"$slave_ip\", pc_name=\"$pc_name\", thor_name=\"$thor_name\"\n";    
+print "DEBUG: THOR PROCESSING. slave_number=\"$slave_number\", slave_ip=\"$slave_ip\", pc_name=\"$pc_name\", thor_name=\"$thor_name\"\n" if $debug;    
       $_=$ThorSlaveProcess_xml;
       s/{SLAVE_NUMBER}/$slave_number/gs;
       s/{COMPUTER_NAME}/$pc_name/s;
-      print "saveFile\(\$_,\"$ThorCluster/ThorSlaveProcess\"\)\;\n";
+      print "saveFile\(\$_,\"$ThorCluster/ThorSlaveProcess\"\)\;\n" if $debug;
       saveFile($_,"$ThorCluster/ThorSlaveProcess");
     }
   }
@@ -278,43 +280,43 @@ print "DEBUG: THOR PROCESSING. slave_number=\"$slave_number\", slave_ip=\"$slave
 #       and take from $change_source/Software/Topology/Cluster these 3 attributes EclCCServerProcess, EclSchedulerProcess, and
 #       RoxieCluster.
 
-print "Size of \@thor is ",scalar(@thor),"\n";
+print "Size of \@thor is ",scalar(@thor),"\n" if $debug;
 if ( scalar(@thor) > 0 ){
-  print "my_mkdir(\"$new_environment/Environment/Software/Topology/Cluster\")\n";
+  print "my_mkdir(\"$new_environment/Environment/Software/Topology/Cluster\")\n" if $debug;
   my $target_path=my_mkdir("$new_environment/Environment/Software/Topology/Cluster");
-  print "target_path=\"$target_path\"\n";
+  print "target_path=\"$target_path\"\n" if $debug;
   system("cp $change_source/Software/Topology/Cluster/ahead_thor $target_path/ahead");
   system("cp $change_source/Software/Topology/Cluster/EclAgentProcess $target_path");
   system("cp $change_source/Software/Topology/Cluster/EclCCServerProcess $target_path");
   system("cp $change_source/Software/Topology/Cluster/EclSchedulerProcess $target_path");
   foreach my $thor (@thor){
      my $thor_name=$thor->{name};
-print "DEBUG: In foreach. thor_name\"$thor_name\"\n";
+print "DEBUG: In foreach. thor_name\"$thor_name\"\n" if $debug;
      my $source="$change_source/Software/Topology/Cluster/ThorCluster";
      $_=`cat $source`;
      chomp;
      s/{THOR_NAME}/$thor_name/gs;
-     print "saveFile\(\$_,\"$target_path/ThorCluster\"\)\; Length of ThorCluster is ",length($_),"\n";
+     print "saveFile\(\$_,\"$target_path/ThorCluster\"\)\; Length of ThorCluster is ",length($_),"\n" if $debug;
      saveFile($_,"$target_path/ThorCluster");
   }
 }
 
-print "Size of \@roxie is ",scalar(@roxie),"\n";
+print "Size of \@roxie is ",scalar(@roxie),"\n" if $debug;
 if ( scalar(@roxie) > 0 ){
-  print "my_mkdir(\"$new_environment/Environment/Software/Topology/Cluster\")\n";
+  print "my_mkdir(\"$new_environment/Environment/Software/Topology/Cluster\")\n" if $debug;
   my $target_path=my_mkdir("$new_environment/Environment/Software/Topology/Cluster");
-  print "target_path=\"$target_path\"\n";
+  print "target_path=\"$target_path\"\n" if $debug;
   system("cp $change_source/Software/Topology/Cluster/ahead_roxie $target_path/ahead");
   system("cp $change_source/Software/Topology/Cluster/EclCCServerProcess $target_path");
   system("cp $change_source/Software/Topology/Cluster/EclSchedulerProcess $target_path");
   foreach my $roxie (@roxie){
      my $roxie_name=$roxie->{name};
-print "DEBUG: In foreach. roxie_name\"$roxie_name\"\n";
+print "DEBUG: In foreach. roxie_name\"$roxie_name\"\n" if $debug;
      my $source="$change_source/Software/Topology/Cluster/RoxieCluster";
      $_=`cat $source`;
      chomp;
      s/{ROXIE_NAME}/$roxie_name/gs;
-     print "saveFile\(\$_,\"$target_path/RoxieCluster\"\)\; Length of RoxieCluster is ",length($_),"\n";
+     print "saveFile\(\$_,\"$target_path/RoxieCluster\"\)\; Length of RoxieCluster is ",length($_),"\n" if $debug;
      saveFile($_,"$target_path/RoxieCluster");
   }
 }
@@ -323,22 +325,22 @@ print "DEBUG: In foreach. roxie_name\"$roxie_name\"\n";
 # 9. If wssql exists, then 1) add its BuildSet to Programs/Build, 2) add EspBinding to EspProcess and add
 #    its EspService to Software.
 if ( inSupport('wssql') ){
-  print "DEBUG: FOUND WSSQL. First add its BuildSet to Environment/Programs/Build.\n";
+  print "DEBUG: FOUND WSSQL. First add its BuildSet to Environment/Programs/Build.\n" if $debug;
   # Add its BuildSet to Programs/Build
   $_=`cat $change_source/Programs/Build/BuildSet#wssql`;
-  print "saveFile\(\$_,\"\$new_environment/Environment/Programs/Build/BuildSet\"\)\;\n";
+  print "saveFile\(\$_,\"\$new_environment/Environment/Programs/Build/BuildSet\"\)\;\n" if $debug;
   saveFile($_,"$new_environment/Environment/Programs/Build/BuildSet");
 
   # Add its EspService to Software
-  print "DEBUG: FOUND WSSQL. Second, add its EspService to Environment/Software.\n";
+  print "DEBUG: FOUND WSSQL. Second, add its EspService to Environment/Software.\n" if $debug;
   $_=`cat $change_source/Software/EspService#wssql`;
-  print "saveFile\(\$_,\"\$new_environment/Environment/Software/EspService\"\)\;\n";
+  print "saveFile\(\$_,\"\$new_environment/Environment/Software/EspService\"\)\;\n" if $debug;
   saveFile($_,"$new_environment/Environment/Software/EspService");
 
   # Add EspBinding to EspProcess
-  print "DEBUG: FOUND WSSQL. Thrid, add its EspBinding to Environment/Software/EspProcess.\n";
+  print "DEBUG: FOUND WSSQL. Thrid, add its EspBinding to Environment/Software/EspProcess.\n" if $debug;
   $_=`cat $change_source/Software/EspProcess/EspBinding#wssql`;
-  print "saveFile\(\$_,\"\$new_environment/Environment/Software/EspProcess/EspBinding\"\)\;\n";
+  print "saveFile\(\$_,\"\$new_environment/Environment/Software/EspProcess/EspBinding\"\)\;\n" if $debug;
   saveFile($_,"$new_environment/Environment/Software/EspProcess/EspBinding");
 }
 
@@ -357,7 +359,7 @@ if ( inSupport('wssql') ){
 #     7. s/\b$re/$assignment/;
 #     8. saveFile($_,$path);
 
-print "===================== ASSIGNMENTs =====================\n";
+print "===================== ASSIGNMENTs =====================\n" if $debug;
 if (scalar(@thor)==1){
    my $master_ip=$thor[0]->{master_ip};
    my $slave_ip=@{$thor[0]->{slave_ips}}[0];
@@ -369,43 +371,43 @@ for ( my $i=0; $i < scalar(@assignment); $i++){
      $path =~ s/\./\*\//g;
      $path = "$new_environment/Environment/$path";
      $path = "$path $path#*" if -e "$path#*";
-print "DEBUG: In ASSIGNMENT. Just before 'ls -1 \$path' path=\"$path\"\n";
+print "DEBUG: In ASSIGNMENT. Just before 'ls -1 \$path' path=\"$path\"\n" if $debug;
      my $paths = `ls -1 $path`;
      my @path=split(/\n/,$paths);
      @path=grep(!/cannot access/,@path); # remove access errors
      @path=grep(!/cannot access/,@path); # remove errors
-print "DEBUG: In ASSIGNMENT. \@path=(",join(",",@path),")\n";
+print "DEBUG: In ASSIGNMENT. \@path=(",join(",",@path),")\n" if $debug;
 
      foreach my $path (@path){
-print "DEBUG: In ASSIGNMENT. In foreach \@path loop. path=\"$path\"\n";
+print "DEBUG: In ASSIGNMENT. In foreach \@path loop. path=\"$path\"\n" if $debug;
        $path = "$path/ahead" if -d $path; # e.g. assignment: Software.ThorCluster:slavesPerNode="4" (assignment will be in ahead)
        $_=`cat $path`; 
        foreach my $assignment (@$assignments){
-print "DEBUG: In ASSIGNMENT. foreach \@assignment loop. assignment=\"$assignment\"\n";
+print "DEBUG: In ASSIGNMENT. foreach \@assignment loop. assignment=\"$assignment\"\n" if $debug;
 	 my ( $parm, $value )=split(/=/,$assignment);
          my $re = '\b'.$parm.'=".*?"';
        
 	 # ASSIGNMENT FOUND
          if ( s/$re/$assignment/s ){
-           print "ASSIGNMENT FOUND.\n";
+           print "ASSIGNMENT FOUND.\n" if $debug;
          }
 	 # ASSIGNMENT NOT FOUND
          elsif( /(\n +)([a-zA-Z]\w*="[^"]+")(\/?\>)/s ){
 	   my $indent=$1;
 	   my $a=$2;
 	   my $endtag=$3;
-print "DEBUG: In ASSIGNMENT. ASSIGNMENT NOT FOUND. indent=\"$indent\", a=\"$a\", endtag=\"$endtag\"\n";
+print "DEBUG: In ASSIGNMENT. ASSIGNMENT NOT FOUND. indent=\"$indent\", a=\"$a\", endtag=\"$endtag\"\n" if $debug;
 	   my $new_assignment="$indent$a$indent$assignment$endtag";
 	   s/\n +[a-zA-Z]\w*="[^"]+"\/?\>/$new_assignment/s;
-print "DEBUG: In ASSIGNMENT. Just before saveFile. new_assignment=\"$new_assignment\"\n";
-           print "ASSIGNMENT NOT FOUND. New tail is \"".substr($_,length($_)-60)."\"\n";
+print "DEBUG: In ASSIGNMENT. Just before saveFile. new_assignment=\"$new_assignment\"\n" if $debug;
+           print "ASSIGNMENT NOT FOUND. New tail is \"".substr($_,length($_)-60)."\"\n" if $debug;
          }
          else{
            die "ERROR: ASSIGNMENT. Did not add assignment, \"$assignment\" at path=\"$path\"\n";
          }
        }
 
-       print "ASSIGNMENT.  AFTER FOREACH \@ASSIGNMENT LOOP. saveFile\(\$_,$path\)\;\n";
+       print "ASSIGNMENT.  AFTER FOREACH \@ASSIGNMENT LOOP. saveFile\(\$_,$path\)\;\n" if $debug;
        saveFile($_,$path, 'skipunique');
      }
 }
@@ -414,5 +416,7 @@ OUTPUTXMLFILE:
 #------------------------------------------------------------------------------------------------------------
 # A. Make environment.xml file from $new_environment
 my $NestedFolders2ENVLog=($new_environment =~ /^(.+\/)([^\/]+)$/ )? "${1}NestedFolders2ENV-$2.log" : "NestedFolders2ENV-$new_environment.log" ;
-print(" $thisDir/NestedFolders2ENV.pl $new_environment.xml \> $NestedFolders2ENVLog\n");
-system("$thisDir/NestedFolders2ENV.pl $new_environment.xml > $NestedFolders2ENVLog");
+print(" $thisDir/NestedFolders2ENV.pl $new_environment.xml \> $NestedFolders2ENVLog\n") if $debug;
+$arg=($debug)? "-debug" : '';
+$arg .=" -outfile $opt_outfile" if $opt_outfile !~ /^\s*$/;
+system("$thisDir/NestedFolders2ENV.pl $arg $new_environment.xml > $NestedFolders2ENVLog");

@@ -323,7 +323,7 @@ my ( $path )=@_;
 #print "DEBUG: Entering modifyName. path=\"$path\".\n";
      while ( -e $path ){
        my $n = ( $path =~ s/#(\d+)$// )? $1 : 0 ;
-       $path = sprintf "%s#%03d", $path,$n+1;
+       $path = sprintf "%s#%05d", $path,$n+1;
 #print "DEBUG: In modifyName. After mod. path=\"$path\".\n";
      }
 #print "DEBUG: Leaving modifyName. path=\"$path\".\n";
